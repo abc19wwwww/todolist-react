@@ -51,7 +51,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main>
+      <main className="d-flex flex-column">
         <div className="container">
           {/* title */}
           <div className="title">
@@ -103,6 +103,7 @@ export default function Home() {
             </div>
           </div>
         </div>
+        <p className="statement">本專案僅為練習用途</p>
       </main>
     </>
   );

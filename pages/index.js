@@ -3,6 +3,7 @@ import Head from "next/head";
 // 套件
 import DatePicker from "react-datepicker";
 import Modal from "react-modal";
+import dayjs from "dayjs";
 // icons
 import { FaPlus, FaCalendarAlt } from "react-icons/fa";
 // styles
@@ -13,7 +14,10 @@ Modal.setAppElement("#__next");
 export default function Home() {
   const [modalIsOpen, setIsOpen] = useState(false); // modla 開關
   const [showDatePicker, setShowDatePicker] = useState(false); // 月曆開關
-  const [startDate, setStartDate] = useState(new Date()); // 月曆預設日期
+  const [startDate, setStartDate] = useState(new Date()); // 月曆日期
+  const [taskText, setTaskText] = useState(""); // 代辦事項文字
+  const [todolist, setTodolist] = useState([]); // 代辦事項列表
+
   // modla 開關
   function openModal() {
     setIsOpen(true);
@@ -30,6 +34,13 @@ export default function Home() {
     if (window.innerWidth <= 576) {
       openModal();
     }
+  };
+
+  // 新增代辦事項
+  const addTodo = () => {
+    const formatDate = dayjs(startDate).format("YYYY-MM-DD HH:mm");
+    setTodolist([...todolist, { text: taskText, date: formatDate }]);
+    setTaskText("");
   };
 
   return (
@@ -49,7 +60,11 @@ export default function Home() {
           {/* content */}
           <div className="content">
             <div className="creat">
-              <input type="text" />
+              <input
+                type="text"
+                value={taskText}
+                onChange={(e) => setTaskText(e.target.value)}
+              />
               <button className="fa-calendar-btn" onClick={handleDatePicker}>
                 <FaCalendarAlt />
               </button>
@@ -82,7 +97,7 @@ export default function Home() {
                   popperClassName="my-popper"
                 />
               </Modal>
-              <button className="fa-plus-btn">
+              <button className="fa-plus-btn" onClick={addTodo}>
                 <FaPlus />
               </button>
             </div>

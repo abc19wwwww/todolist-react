@@ -60,12 +60,10 @@ main {
           }
         }
         .date-picker {
+          width: 330px;
           position: absolute;
           top: 40px;
-          right: 156px;
-          @media (max-width: 576px) {
-            right: 38px;
-          }
+          right: 80px;
         }
         .fa-plus-btn {
           width: 34px;
@@ -112,3 +110,25 @@ main {
   background-color: $light-gray !important;
 }
 // 月曆選則器樣式 ==========
+
+// modal 樣式 ==========
+.modal {
+  width: 100%;
+  height: auto;
+  text-align: center;
+  background-color: transparent;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+}
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgb(7, 5, 5, 0.4);
+}
+// modal 樣式 ==========

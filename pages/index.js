@@ -2,17 +2,34 @@ import { useState } from "react";
 import Head from "next/head";
 // 套件
 import DatePicker from "react-datepicker";
+import Modal from "react-modal";
 // icons
 import { FaPlus, FaCalendarAlt } from "react-icons/fa";
 // styles
 import "react-datepicker/dist/react-datepicker.css";
 
-export default function Home() {
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [startDate, setStartDate] = useState(new Date());
+Modal.setAppElement("#__next");
 
+export default function Home() {
+  const [modalIsOpen, setIsOpen] = useState(false); // modla 開關
+  const [showDatePicker, setShowDatePicker] = useState(false); // 月曆開關
+  const [startDate, setStartDate] = useState(new Date()); // 月曆預設日期
+  // modla 開關
+  function openModal() {
+    setIsOpen(true);
+  }
+  function closeModal() {
+    setIsOpen(false);
+    setShowDatePicker(!showDatePicker);
+  }
+
+  // 月曆開關
   const handleDatePicker = () => {
     setShowDatePicker(!showDatePicker);
+    // 576 以下才開啟 modla
+    if (window.innerWidth <= 576) {
+      openModal();
+    }
   };
 
   return (
@@ -36,10 +53,12 @@ export default function Home() {
               <button className="fa-calendar-btn" onClick={handleDatePicker}>
                 <FaCalendarAlt />
               </button>
+              {/* 電腦版月曆 */}
               {showDatePicker ? (
-                <div className="date-picker">
+                <div className="d-none d-sm-block date-picker">
                   <DatePicker
                     inline
+                    showTimeSelect
                     selected={startDate}
                     onChange={(date) => setStartDate(date)}
                     popperClassName="my-popper"
@@ -48,6 +67,21 @@ export default function Home() {
               ) : (
                 ""
               )}
+              {/* 手機版月曆 */}
+              <Modal
+                isOpen={modalIsOpen}
+                onRequestClose={closeModal}
+                className={`d-block d-sm-none modal`}
+                overlayClassName={`overlay`}
+              >
+                <DatePicker
+                  inline
+                  showTimeSelect
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  popperClassName="my-popper"
+                />
+              </Modal>
               <button className="fa-plus-btn">
                 <FaPlus />
               </button>

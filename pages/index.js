@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Head from "next/head";
 // 套件
 import DatePicker from "react-datepicker";
@@ -39,9 +39,20 @@ export default function Home() {
   // 新增代辦事項
   const addTodo = () => {
     const formatDate = dayjs(startDate).format("YYYY-MM-DD HH:mm");
-    setTodolist([...todolist, { text: taskText, date: formatDate }]);
+    const newTodo = { text: taskText, date: formatDate };
+    const updatedTodolist = [...todolist, newTodo];
+    setTodolist(updatedTodolist);
+    localStorage.setItem("todolist", JSON.stringify(updatedTodolist)); // 更新 localStorage
     setTaskText("");
   };
+
+  // 從 localStorage 獲取數據並初始化狀態
+  useEffect(() => {
+    const savedTodolist = localStorage.getItem("todolist");
+    if (savedTodolist) {
+      setTodolist(JSON.parse(savedTodolist));
+    }
+  }, []);
 
   return (
     <>
@@ -59,6 +70,7 @@ export default function Home() {
           </div>
           {/* content */}
           <div className="content">
+            {/* creat */}
             <div className="creat">
               <input
                 type="text"
@@ -101,9 +113,20 @@ export default function Home() {
                 <FaPlus />
               </button>
             </div>
+            <div className="display">
+              <ul>
+                {todolist.map((item, index) => (
+                  <li key={index}>
+                    <div className="d-flex justify-content-between">
+                      <p>{item.date}</p>
+                      <p>{item.text}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
-        <p className="statement">本專案僅為練習用途</p>
       </main>
     </>
   );

@@ -5,7 +5,7 @@ import DatePicker from "react-datepicker";
 import Modal from "react-modal";
 import dayjs from "dayjs";
 // icons
-import { FaPlus, FaCalendarAlt } from "react-icons/fa";
+import { FaPlus, FaCalendarAlt, FaTrashAlt } from "react-icons/fa";
 // styles
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -44,6 +44,12 @@ export default function Home() {
     setTodolist(updatedTodolist);
     localStorage.setItem("todolist", JSON.stringify(updatedTodolist)); // 更新 localStorage
     setTaskText("");
+  };
+  // 刪除代辦事項
+  const handleDeltedTodo = (e) => {
+    const updatedTodolist = todolist.filter((item, index) => index !== 0);
+    setTodolist(updatedTodolist);
+    localStorage.setItem("todolist", JSON.stringify(updatedTodolist)); // 更新 localStorage
   };
 
   // 從 localStorage 獲取數據並初始化狀態
@@ -113,17 +119,35 @@ export default function Home() {
                 <FaPlus />
               </button>
             </div>
+            {/* tabs */}
+            <div className="d-flex justify-content-between tabs-menu">
+              <span>共0筆</span>
+              <div className="tabs">
+                <button className="active">全部</button>
+                <button>進行中</button>
+                <button>已完成</button>
+              </div>
+            </div>
+            {/* display */}
             <div className="display">
-              <ul>
-                {todolist.map((item, index) => (
-                  <li key={index}>
-                    <div className="d-flex justify-content-between">
-                      <p>{item.date}</p>
-                      <p>{item.text}</p>
-                    </div>
-                  </li>
-                ))}
-              </ul>
+              {todolist.map((item, index) => (
+                <div
+                  key={index}
+                  className="d-flex justify-content-between todo"
+                >
+                  <div className="d-flex align-items-center">
+                    <input type="checkbox" />
+                    <p className="mb-0">{item.date}</p>
+                  </div>
+                  <div className="d-flex align-items-center">
+                    <p className="mb-0">{item.text}</p>
+                    <FaTrashAlt
+                      onClick={handleDeltedTodo}
+                      className="fa-trash"
+                    />
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>

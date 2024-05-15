@@ -96,9 +96,22 @@ main {
           padding: 10px 0;
           border-bottom: 1px solid $deep-gray;
         }
-        input[type="checkbox"] {
-          margin-top: 4px;
-          margin-right: 8px;
+        .display-left {
+          min-width: 150px;
+          input[type="checkbox"] {
+            margin-top: 4px;
+            margin-right: 8px;
+          }
+        }
+        .display-right {
+          @media (max-width: 576px) {
+            p {
+              width: 26px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
         }
         .fa-trash {
           margin-left: 10px;

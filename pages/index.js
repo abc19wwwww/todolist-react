@@ -4,6 +4,7 @@ import Head from "next/head";
 import DatePicker from "react-datepicker";
 import Modal from "react-modal";
 import dayjs from "dayjs";
+import toast, { Toaster } from "react-hot-toast";
 // icons
 import { FaPlus, FaCalendarAlt, FaTrashAlt } from "react-icons/fa";
 // styles
@@ -39,17 +40,23 @@ export default function Home() {
   // 新增代辦事項
   const addTodo = () => {
     const formatDate = dayjs(startDate).format("YYYY-MM-DD HH:mm");
-    const newTodo = { text: taskText, date: formatDate };
+    const newTodo = { id: +new Date(), text: taskText, date: formatDate };
     const updatedTodolist = [...todolist, newTodo];
     setTodolist(updatedTodolist);
     localStorage.setItem("todolist", JSON.stringify(updatedTodolist)); // 更新 localStorage
     setTaskText("");
   };
   // 刪除代辦事項
-  const handleDeltedTodo = (e) => {
-    const updatedTodolist = todolist.filter((item, index) => index !== 0);
+  const handleDeltedTodo = (id) => {
+    const updatedTodolist = todolist.filter((item) => item.id !== id);
     setTodolist(updatedTodolist);
-    localStorage.setItem("todolist", JSON.stringify(updatedTodolist)); // 更新 localStorage
+    localStorage.setItem("todolist", JSON.stringify(updatedTodolist));
+  };
+  // 顯示代辦事項文字
+  const handleShowText = (text) => {
+    if (window.innerWidth <= 576) {
+      toast(text);
+    }
   };
 
   // 從 localStorage 獲取數據並初始化狀態
@@ -69,6 +76,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="d-flex flex-column">
+        <Toaster />
         <div className="container">
           {/* title */}
           <div className="title">
@@ -135,14 +143,19 @@ export default function Home() {
                   key={index}
                   className="d-flex justify-content-between todo"
                 >
-                  <div className="d-flex align-items-center">
+                  <div className="d-flex align-items-center display-left">
                     <input type="checkbox" />
                     <p className="mb-0">{item.date}</p>
                   </div>
-                  <div className="d-flex align-items-center">
-                    <p className="mb-0">{item.text}</p>
+                  <div className="d-flex align-items-center display-right">
+                    <p
+                      className="mb-0"
+                      onClick={() => handleShowText(item.text)}
+                    >
+                      {item.text}
+                    </p>
                     <FaTrashAlt
-                      onClick={handleDeltedTodo}
+                      onClick={() => handleDeltedTodo(item.id)}
                       className="fa-trash"
                     />
                   </div>

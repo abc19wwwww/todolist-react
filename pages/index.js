@@ -52,7 +52,7 @@ export default function Home() {
     setTodolist(updatedTodolist);
     localStorage.setItem("todolist", JSON.stringify(updatedTodolist));
   };
-  // 顯示代辦事項文字
+  // 手機板顯示代辦事項文字
   const handleShowText = (text) => {
     if (window.innerWidth <= 576) {
       toast(text);

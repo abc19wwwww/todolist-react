@@ -89,6 +89,9 @@ main {
           border: none;
           background-color: transparent;
         }
+        .active{
+          color: $main;
+        }
       }
       .display {
         margin-top: 20px;

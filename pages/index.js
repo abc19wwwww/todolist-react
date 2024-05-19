@@ -18,6 +18,7 @@ export default function Home() {
   const [startDate, setStartDate] = useState(new Date()); // 月曆日期
   const [taskText, setTaskText] = useState(""); // 代辦事項文字
   const [todolist, setTodolist] = useState([]); // 代辦事項列表
+  const [activeTab, setActiveTab] = useState("all"); // 標籤狀態
 
   // modla 開關
   function openModal() {
@@ -39,11 +40,16 @@ export default function Home() {
 
   // 新增代辦事項
   const addTodo = () => {
-    const formatDate = dayjs(startDate).format("YYYY-MM-DD HH:mm");
-    const newTodo = { id: +new Date(), text: taskText, date: formatDate };
-    const updatedTodolist = [...todolist, newTodo];
+    const formatDate = dayjs(startDate).format("YYYY-MM-DD HH:mm"); // 日期格式化
+    const newTodo = {
+      id: +new Date(), // 產生唯一 id
+      text: taskText,
+      date: formatDate,
+      isChecked: false, // 是否完成
+    }; // 新增代辦事項
+    const updatedTodolist = [...todolist, newTodo]; // 更新代辦事項列表
     setTodolist(updatedTodolist);
-    localStorage.setItem("todolist", JSON.stringify(updatedTodolist)); // 更新 localStorage
+    localStorage.setItem("todolist", JSON.stringify(updatedTodolist)); // 存入 localStorage
     setTaskText("");
   };
   // 刪除代辦事項
@@ -57,6 +63,21 @@ export default function Home() {
     if (window.innerWidth <= 576) {
       toast(text);
     }
+  };
+  // 代辦事項完成狀態
+  const handleCheckboxChange = (id) => {
+    const updatedTodolist = todolist.map((item) => {
+      if (item.id === id) {
+        item.isChecked = !item.isChecked;
+      }
+      return item;
+    });
+    setTodolist(updatedTodolist);
+    localStorage.setItem("todolist", JSON.stringify(updatedTodolist));
+  };
+  // 標籤切換
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
   };
 
   // 從 localStorage 獲取數據並初始化狀態
@@ -129,11 +150,32 @@ export default function Home() {
             </div>
             {/* tabs */}
             <div className="d-flex justify-content-between tabs-menu">
-              <span>共0筆</span>
+              <span>共{todolist.length}筆</span>
               <div className="tabs">
-                <button className="active">全部</button>
-                <button>進行中</button>
-                <button>已完成</button>
+                <button
+                  className={activeTab === "all" ? "active" : ""}
+                  onClick={() => {
+                    handleTabChange("all");
+                  }}
+                >
+                  全部
+                </button>
+                <button
+                  className={activeTab === "completed" ? "active" : ""}
+                  onClick={() => {
+                    handleTabChange("completed");
+                  }}
+                >
+                  進行中
+                </button>
+                <button
+                  className={activeTab === "incomplete" ? "active" : ""}
+                  onClick={() => {
+                    handleTabChange("incomplete");
+                  }}
+                >
+                  已完成
+                </button>
               </div>
             </div>
             {/* display */}
@@ -144,12 +186,30 @@ export default function Home() {
                   className="d-flex justify-content-between todo"
                 >
                   <div className="d-flex align-items-center display-left">
-                    <input type="checkbox" />
-                    <p className="mb-0">{item.date}</p>
+                    <input
+                      type="checkbox"
+                      checked={item.isChecked}
+                      onChange={() => handleCheckboxChange(item.id)}
+                    />
+                    <p
+                      className="mb-0"
+                      style={{
+                        textDecoration: item.isChecked
+                          ? "line-through"
+                          : "none",
+                      }}
+                    >
+                      {item.date}
+                    </p>
                   </div>
                   <div className="d-flex align-items-center display-right">
                     <p
                       className="mb-0"
+                      style={{
+                        textDecoration: item.isChecked
+                          ? "line-through"
+                          : "none",
+                      }}
                       onClick={() => handleShowText(item.text)}
                     >
                       {item.text}

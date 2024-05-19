@@ -161,17 +161,17 @@ export default function Home() {
                   全部
                 </button>
                 <button
-                  className={activeTab === "completed" ? "active" : ""}
+                  className={activeTab === "incomplete" ? "active" : ""}
                   onClick={() => {
-                    handleTabChange("completed");
+                    handleTabChange("incomplete");
                   }}
                 >
                   進行中
                 </button>
                 <button
-                  className={activeTab === "incomplete" ? "active" : ""}
+                  className={activeTab === "completed" ? "active" : ""}
                   onClick={() => {
-                    handleTabChange("incomplete");
+                    handleTabChange("completed");
                   }}
                 >
                   已完成
@@ -180,47 +180,54 @@ export default function Home() {
             </div>
             {/* display */}
             <div className="display">
-              {todolist.map((item, index) => (
-                <div
-                  key={index}
-                  className="d-flex justify-content-between todo"
-                >
-                  <div className="d-flex align-items-center display-left">
-                    <input
-                      type="checkbox"
-                      checked={item.isChecked}
-                      onChange={() => handleCheckboxChange(item.id)}
-                    />
-                    <p
-                      className="mb-0"
-                      style={{
-                        textDecoration: item.isChecked
-                          ? "line-through"
-                          : "none",
-                      }}
-                    >
-                      {item.date}
-                    </p>
+              {todolist
+                .filter(
+                  (todo) =>
+                    activeTab === "all" ||
+                    (activeTab === "completed" && todo.isChecked) ||
+                    (activeTab === "incomplete" && !todo.isChecked)
+                )
+                .map((item, index) => (
+                  <div
+                    key={index}
+                    className="d-flex justify-content-between todo"
+                  >
+                    <div className="d-flex align-items-center display-left">
+                      <input
+                        type="checkbox"
+                        checked={item.isChecked}
+                        onChange={() => handleCheckboxChange(item.id)}
+                      />
+                      <p
+                        className="mb-0"
+                        style={{
+                          textDecoration: item.isChecked
+                            ? "line-through"
+                            : "none",
+                        }}
+                      >
+                        {item.date}
+                      </p>
+                    </div>
+                    <div className="d-flex align-items-center display-right">
+                      <p
+                        className="mb-0"
+                        style={{
+                          textDecoration: item.isChecked
+                            ? "line-through"
+                            : "none",
+                        }}
+                        onClick={() => handleShowText(item.text)}
+                      >
+                        {item.text}
+                      </p>
+                      <FaTrashAlt
+                        onClick={() => handleDeltedTodo(item.id)}
+                        className="fa-trash"
+                      />
+                    </div>
                   </div>
-                  <div className="d-flex align-items-center display-right">
-                    <p
-                      className="mb-0"
-                      style={{
-                        textDecoration: item.isChecked
-                          ? "line-through"
-                          : "none",
-                      }}
-                      onClick={() => handleShowText(item.text)}
-                    >
-                      {item.text}
-                    </p>
-                    <FaTrashAlt
-                      onClick={() => handleDeltedTodo(item.id)}
-                      className="fa-trash"
-                    />
-                  </div>
-                </div>
-              ))}
+                ))}
             </div>
           </div>
         </div>
